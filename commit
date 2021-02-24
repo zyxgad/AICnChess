@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if ! type git 2>&1 1>/dev/null; then
+	echo 'You must install git'
+	exit 128
+fi
+
+USER_NAME=`git config --get user.name`
+if ! [[ -n ${USER_NAME} ]]; then
+	read -r -p 'Please input your user name: ' USER_NAME
+	git config user.name "${USER_NAME}"
+fi
+
+USER_EMAIL=`git config --get user.email`
+if ! [[ -n ${USER_EMAIL} ]]; then
+	read -r -p 'Please input your email: ' USER_EMAIL
+	git config user.email "${USER_EMAIL}"
+fi
+
+echo "Your user name is '${USER_NAME}'"
+echo "Your email is ${USER_EMAIL}"
+
+
+PROG_GIT_SSH='git@github.com:zyxgad/AICnChess.git'
+if ! [[ -d '.git' ]]; then
+	git init
+fi
+LGIT_URL=`git remote get-url aichess 2>/dev/null`
+if [[ $? != 0 ]]; then
+	git remote add aichess ${PROG_GIT_SSH}
+elif [[ e"${LGIT_URL}" != e"${PROG_GIT_SSH}" ]]; then
+	git remote set-url aichess ${LGIT_URL}
+fi
+
+
+echo '=================project=status================='
+git status
+echo '================================================'
+
+read -r -p 'Do you want to add all file?(Y/n)' _T
+if [[ e"$_T" == e'Y' ]]; then
+	git add .
+else
+	echo 'Input what file do you want to add(input empty to break):'
+	while [[ 1 == 1 ]]; do
+		read -r _T
+		[[ -n "$_T" ]] || break
+		git add $_T
+	done
+fi
+
+read -r -p 'Do you want to continue commit?(Y/n)' _T; [[ e"$_T" != e'Y' ]] && exit 0
+read -r -p 'Please input commit msg: ' COMMIT_MSG
+git commit -m "${COMMIT_MSG}"
+
+read -r -p 'Do you want to push?(Y/n)' _T; [[ e"$_T" != e'Y' ]] && exit 0
+echo '====================pushing====================='
+git push aichess master
+echo '================================================'
+
