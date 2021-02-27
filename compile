@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if ! type go 2>&1 1>/dev/null; then
+	echo 'You must install go'
+	exit 128
+fi
+
+OUT_PUT_FILE='./bin/AIchess'
+rm -f ${OUT_PUT_FILE}
+
+go build -a -o "${OUT_PUT_FILE}" main.go || exit $?
+
+read -r -p "Do you want to execute '${OUT_PUT_FILE}' ?(Y/n)" _T; [[ e"$_T" != e'Y' ]] && exit 0
+echo '================================================'
+./bin/AIchess

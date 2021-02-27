@@ -6,10 +6,10 @@ import(
 	os  "os"
 )
 
-const (
-	SCREEN_WIDTH  = 400
-	SCREEN_HEIGHT = 600
-	SCREEN_TITLE  = "AI chess player"
+var (
+	SCREEN_WIDTH  = 480
+	SCREEN_HEIGHT = 740
+	SCREEN_TITLE  = "Automatic memory learning chess(AMLC)"
 )
 
 var (
